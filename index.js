@@ -30,6 +30,7 @@ const client = new MongoClient(uri, {
   async function run() {
     try {
         const foodCollection = client.db('coolinaryDB').collection('food')
+        const feedbackCollection = client.db('coolinaryDB').collection('feedback')
 
         app.post('/food', async(req, res)=>{
             const food = req.body
@@ -37,6 +38,13 @@ const client = new MongoClient(uri, {
             const result = await foodCollection.insertOne(food)
             res.send(result)
         })
+// feedback by user
+        app.post('/feedback', async(req, res)=>{
+          const feedback = req.body
+          console.log(feedback)
+          const result = await feedbackCollection.insertOne(feedback)
+          res.send(result)
+      })
   
         // send data for all food pages 
         app.get('/allfood', async(req, res)=>{
@@ -50,7 +58,7 @@ const client = new MongoClient(uri, {
             if(filter) query.category = filter
             let options ={}
             if(sort) options = {sort: {price:sort === 'asc'?1:-1 }}
-            const result = await foodCollection.find(query, options).toArray()
+            const result = await feedbackCollection.find(query, options).toArray()
             res.send(result)
         })
 
