@@ -41,10 +41,12 @@ const client = new MongoClient(uri, {
         // send data for all food pages 
         app.get('/allfood', async(req, res)=>{
             const filter = req.query.filter
+            const sort = req.query.sort
             console.log(filter)
             let query ={}
             if(filter) query.category = filter
             let options ={}
+            if(sort) options = {sort: {price:sort === 'asc'?1:-1 }}
             const result = await foodCollection.find(query, options).toArray()
             res.send(result)
         })
