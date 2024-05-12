@@ -46,6 +46,13 @@ const client = new MongoClient(uri, {
           res.send(result)
       })
   
+
+      // send data for gallery section used feedback db
+      app.get('/feedback', async(req, res)=>{
+        const result = await feedbackCollection.find().toArray()
+        res.send(result)
+      })
+
         // send data for all food pages 
         app.get('/allfood', async(req, res)=>{
             const filter = req.query.filter
@@ -58,7 +65,7 @@ const client = new MongoClient(uri, {
             if(filter) query.category = filter
             let options ={}
             if(sort) options = {sort: {price:sort === 'asc'?1:-1 }}
-            const result = await feedbackCollection.find(query, options).toArray()
+            const result = await foodCollection.find(query, options).toArray()
             res.send(result)
         })
 
