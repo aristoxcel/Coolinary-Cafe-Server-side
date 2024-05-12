@@ -42,8 +42,11 @@ const client = new MongoClient(uri, {
         app.get('/allfood', async(req, res)=>{
             const filter = req.query.filter
             const sort = req.query.sort
-            console.log(filter)
-            let query ={}
+            const search = req.query.search
+
+            let query ={
+              food_name : {$regex: search, $options: 'i'}
+            }
             if(filter) query.category = filter
             let options ={}
             if(sort) options = {sort: {price:sort === 'asc'?1:-1 }}
