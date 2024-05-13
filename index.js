@@ -1,20 +1,18 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-require('dotenv').config()
 const port = process.env.PORT || 5000
 const app = express()
 
-const corsOptions = {
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:5174',
-      'https://coolinary-cafe.web.app',
-    ],
-    credentials: true,
-    optionSuccessStatus: 200,
-  }
-app.use(cors(corsOptions))
+
+  app.use(
+    cors({
+        origin: ['http://localhost:5173', 'https://coolinary-cafe.web.app'],
+        credentials: true,
+    }),
+)
+
 app.use(express.json())
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.kdbwfxu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -32,6 +30,44 @@ const client = new MongoClient(uri, {
         const foodCollection = client.db('coolinaryDB').collection('food')
         const feedbackCollection = client.db('coolinaryDB').collection('feedback')
         const orderCollection = client.db('coolinaryDB').collection('order')
+
+
+
+      //   app.post('/jwt', async (req, res) => {
+      //     try {
+      //         const user = req.body
+      //         const token = jwt.sign(user, jwtSecret, {
+      //             expiresIn: '1d',
+      //         })
+      //         res
+      //             .cookie('token', token, {
+      //                 httpOnly: true,
+      //                 secure: process.env.NODE_ENV === 'production',
+      //                 sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+      //             })
+      //             .send({
+      //                 status: true,
+      //             })
+      //     } catch (error) {
+      //         res.send({
+      //             status: true,
+      //             error: error.message,
+      //         })
+      //     }
+      // })
+      
+
+    //   app.post('/logout', async (req, res) => {
+    //     const user = req.body
+    //     res
+    //         .clearCookie('token', {
+    //             maxAge: 0,
+    //             secure: process.env.NODE_ENV === 'production' ? true : false,
+    //             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+    //         })
+    //         .send({ status: true })
+    // })
+    
 
         app.post('/food', async(req, res)=>{
             const food = req.body
@@ -84,13 +120,24 @@ const client = new MongoClient(uri, {
         })
 
 
-        // feedback by user
+        // ordered by user
         app.post('/order', async(req, res)=>{
           const order = req.body
           console.log(order)
           const result = await orderCollection.insertOne(order)
           res.send(result)
       })
+
+
+             // get data by user email
+             app.get('/order/:email', async(req, res)=>{
+              const email = req.params.email
+              const query = {email}
+              console.log(email, query)
+              const result = await orderCollection.find(query).toArray()
+              res.send(result)
+            })
+    
 
       
 // feedback by user
