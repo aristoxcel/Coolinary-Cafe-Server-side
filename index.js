@@ -50,12 +50,20 @@ const client = new MongoClient(uri, {
         // get data by user email
         app.get('/my-add-food/:email', async(req, res)=>{
           const email = req.params.email
-          console.log(email)
           const query = {cooker_email:email}
-          console.log(query)
           const result = await foodCollection.find(query).toArray()
           res.send(result)
         })
+
+
+            // delete a job data from db
+    app.delete('/my-add-food/:id', async (req, res) => {
+      const id = req.params.id
+      console.log(id)
+      const query = { _id: new ObjectId(id) }
+      const result = await foodCollection.deleteOne(query)
+      res.send(result)
+    })
 
 // feedback by user
         app.post('/feedback', async(req, res)=>{
