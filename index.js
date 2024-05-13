@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const port = process.env.PORT || 5000
 const app = express()
@@ -38,6 +38,15 @@ const client = new MongoClient(uri, {
             const result = await foodCollection.insertOne(food)
             res.send(result)
         })
+
+        // single page details
+        app.get('/details/:id', async(req, res)=>{
+          const id = req.params.id
+          const query = {_id: new ObjectId(id)}
+          const result = await foodCollection.findOne(query)
+          res.send(result)
+        })
+
 // feedback by user
         app.post('/feedback', async(req, res)=>{
           const feedback = req.body
@@ -52,6 +61,8 @@ const client = new MongoClient(uri, {
         const result = await feedbackCollection.find().toArray()
         res.send(result)
       })
+
+     
 
         // send data for all food pages 
         app.get('/allfood', async(req, res)=>{
