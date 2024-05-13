@@ -47,6 +47,16 @@ const client = new MongoClient(uri, {
           res.send(result)
         })
 
+        // get data by user email
+        app.get('/my-add-food/:email', async(req, res)=>{
+          const email = req.params.email
+          console.log(email)
+          const query = {cooker_email:email}
+          console.log(query)
+          const result = await foodCollection.find(query).toArray()
+          res.send(result)
+        })
+
 // feedback by user
         app.post('/feedback', async(req, res)=>{
           const feedback = req.body
