@@ -31,6 +31,7 @@ const client = new MongoClient(uri, {
     try {
         const foodCollection = client.db('coolinaryDB').collection('food')
         const feedbackCollection = client.db('coolinaryDB').collection('feedback')
+        const orderCollection = client.db('coolinaryDB').collection('order')
 
         app.post('/food', async(req, res)=>{
             const food = req.body
@@ -65,6 +66,33 @@ const client = new MongoClient(uri, {
       res.send(result)
     })
 
+
+        // update a job in db
+        app.put('/food/:id',  async (req, res) => {
+          const id = req.params.id
+          const foodData = req.body
+          console.log(id, foodData)
+          const query = { _id: new ObjectId(id) }
+          const options = { upsert: true }
+          const updateDoc = {
+            $set: {
+              ...foodData,
+            },
+          }
+          const result = await foodCollection.updateOne(query, updateDoc, options)
+          res.send(result)
+        })
+
+
+        // feedback by user
+        app.post('/order', async(req, res)=>{
+          const order = req.body
+          console.log(order)
+          const result = await orderCollection.insertOne(order)
+          res.send(result)
+      })
+
+      
 // feedback by user
         app.post('/feedback', async(req, res)=>{
           const feedback = req.body
